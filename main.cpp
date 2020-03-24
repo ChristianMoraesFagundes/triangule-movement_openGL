@@ -7,28 +7,28 @@ int main() {
 		fprintf(stderr, "ERROR: could not start GLFW3\n");
 		return 1;
 	}
-	/* Caso necessário, definições específicas para SOs, p. e. Apple OSX *
+	/* Caso necessÃ¡rio, definiÃ§Ãµes especÃ­ficas para SOs, p. e. Apple OSX *
 	/* Definir como 3.2 para Apple OS X */
 	/*glfwWindowHint (GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint (GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint (GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint (GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
 	GLFWwindow *window = glfwCreateWindow(
-		640, 480, "Teste de versão OpenGL", NULL, NULL);
+		640, 480, "Teste de versÃ£o OpenGL", NULL, NULL);
 	if (!window) {
 		fprintf(stderr, "ERROR: could not open window with GLFW3\n");
 		glfwTerminate();
 		return 1;
 	}
 	glfwMakeContextCurrent(window);
-	// inicia manipulador da extensão GLEW
+	// inicia manipulador da extensÃ£o GLEW
 	glewExperimental = GL_TRUE;
 	glewInit();
-	// obtenção de versão suportada da OpenGL e renderizador
+	// obtenÃ§Ã£o de versÃ£o suportada da OpenGL e renderizador
 	const GLubyte* renderer = glGetString(GL_RENDERER);
 	const GLubyte* version = glGetString(GL_VERSION);
 	printf("Renderer: %s\n", renderer);
-	printf("OpenGL (versão suportada) %s\n", version);
+	printf("OpenGL (versÃ£o suportada) %s\n", version);
 	// encerra contexto GL e outros recursos da GLFW
 	//system("pause"); 
 
@@ -40,14 +40,17 @@ int main() {
 	};
 
 	float matrix[] = {
- 1.0f, 0.0f, 0.0f, 0.0f, // 1ª coluna
- 0.0f, 1.0f, 0.0f, 0.0f, // 2ª coluna
- 0.0f, 0.0f, 1.0f, 0.0f, // 3ª coluna
- 0.25f, 0.25f, 0.0f, 1.0f // 4ª coluna
+		1.0f, 0.0f, 0.0f, 0.0f, // 1Âª coluna
+		0.0f, 1.0f, 0.0f, 0.0f, // 2Âª coluna
+		0.0f, 0.0f, 1.0f, 0.0f, // 3Âª coluna
+		0.25f, 0.25f, 0.0f, 1.0f // 4Âª coluna
 	};
 
 	float speed = 1.0f;
 	float lastPosition = 0.0f;
+
+	float speedY = 1.5f;
+	float lastPositionY = 0.0f;
 
 
 
@@ -68,16 +71,16 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, vbo); // identifica vbo atual
 										// habilitado primeiro atributo do vbo bound atual
 	glEnableVertexAttribArray(0);
-	// associação do vbo atual com primeiro atributo
-	// 0 identifica que o primeiro atributo está sendo definido
-	// 3, GL_FLOAT identifica que dados são vec3 e estão a cada 3 float.
+	// associaÃ§Ã£o do vbo atual com primeiro atributo
+	// 0 identifica que o primeiro atributo estÃ¡ sendo definido
+	// 3, GL_FLOAT identifica que dados sÃ£o vec3 e estÃ£o a cada 3 float.
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	// é possível associar outros atributos, como normais, mapeamento e cores
-	// lembre-se: um por vértice!
+	// Ã© possÃ­vel associar outros atributos, como normais, mapeamento e cores
+	// lembre-se: um por vÃ©rtice!
 	glBindBuffer(GL_ARRAY_BUFFER, colorsVBO);
 	// habilitado segundo atributo do vbo bound atual
 	glEnableVertexAttribArray(1);
-	// note que agora o atributo 1 está definido
+	// note que agora o atributo 1 estÃ¡ definido
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
 
@@ -119,7 +122,8 @@ int main() {
 
 	int matrixLocation = glGetUniformLocation(shader_programme, "matrix");
 	glUseProgram(shader_programme);
-	glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, matrix);
+	glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, matrix);
+
 
 
 
@@ -143,12 +147,24 @@ int main() {
 		if (fabs(lastPosition) > 1.0f) {
 			speed = -speed;
 		}
+		
+		if (fabs(lastPositionY) > 1.0f) {
+			speedY = -speedY;
+		}
+		
+		
+		
 		matrix[12] = elapsedSeconds * speed +
 			lastPosition;
 		lastPosition = matrix[12];
 
+		matrix[13] = elapsedSeconds * speedY +
+			lastPositionY;
+		lastPositionY = matrix[13];
+
+
 		glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, matrix);
-		// … continuam as definições anteriores…
+		// â€¦ continuam as definiÃ§Ãµes anterioresâ€¦
 
 
 	}
